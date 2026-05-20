@@ -94,7 +94,7 @@ static void mpu6050_read_raw(int16_t accel[3], int16_t gyro[3], int16_t *temp) {
 static void gesture_recognize_task(void *p) {
 	mpu6050_init();
 	int16_t accelerometer[3], gyro[3], temp;
-	int max_value = -1;
+	float max_value = -1.0f;
 	char predict[32];
 	predict[0] = '\0';
 
@@ -135,24 +135,24 @@ static void gesture_recognize_task(void *p) {
 		printf("Classificador executado!\n");
 
 		// print the predictions
-		printf("\n========== PREDICOES ==========\n");
-		printf(
-			"Tempos - DSP: %d ms, Classificacao: %d ms, Anomalia: %d ms\n",
-			result.timing.dsp,
-			result.timing.classification,
-			result.timing.anomaly);
-		printf("Numero de classes: %d\n", EI_CLASSIFIER_LABEL_COUNT);
+		// printf("\n========== PREDICOES ==========\n");
+		// printf(
+		// 	"Tempos - DSP: %d ms, Classificacao: %d ms, Anomalia: %d ms\n",
+		// 	result.timing.dsp,
+		// 	result.timing.classification,
+		// 	result.timing.anomaly);
+		// printf("Numero de classes: %d\n", EI_CLASSIFIER_LABEL_COUNT);
 
 		for (size_t ix = 0; ix < EI_CLASSIFIER_LABEL_COUNT; ix++) {
 			if (result.classification[ix].value > max_value) {
 				max_value = result.classification[ix].value;
 				snprintf(predict, sizeof(predict), "%s", result.classification[ix].label);
 			}
-			printf(
-				"%s: %.5f (%.2f%%)\n",
-				result.classification[ix].label,
-				result.classification[ix].value,
-				result.classification[ix].value * 100.0f);
+			// printf(
+			// 	"%s: %.5f (%.2f%%)\n",
+			// 	result.classification[ix].label,
+			// 	result.classification[ix].value,
+			// 	result.classification[ix].value * 100.0f);
 		}
 		
 		printf("Result: %s\n", predict);
@@ -164,7 +164,7 @@ static void gesture_recognize_task(void *p) {
 		printf("Anomalia: %.3f\n", result.anomaly);
 #endif
 		printf("===============================\n");
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		vTaskDelay(pdMS_TO_TICKS(2000));
 	}
 }
 
